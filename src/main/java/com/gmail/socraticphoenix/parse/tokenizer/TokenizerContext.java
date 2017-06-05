@@ -19,39 +19,31 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.gmail.socraticphoenix.parse.parser.restrictions;
+package com.gmail.socraticphoenix.parse.tokenizer;
 
-import com.gmail.socraticphoenix.parse.parser.PatternResult;
 import com.gmail.socraticphoenix.parse.parser.PatternContext;
-import com.gmail.socraticphoenix.parse.parser.PatternRestriction;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-public class SequenceRestriction implements PatternRestriction {
-    private PatternRestriction[] restrictions;
+public class TokenizerContext {
+    private PatternContext patternContext;
+    private Map<String, TokenizerAction> variables;
 
-    public SequenceRestriction(PatternRestriction... restrictions) {
-        this.restrictions = restrictions.clone();
+    public TokenizerContext() {
+        this.patternContext = new PatternContext();
     }
 
-    @Override
-    public PatternResult match(String string, int start, PatternContext context) {
-        List<PatternResult> subResults = new ArrayList<>();
-        int i = 0;
-        for (PatternRestriction restriction : this.restrictions) {
-            i++;
-            PatternResult result = restriction.match(string, start, context);
-            if (result.isSuccesful()) {
-                subResults.add(result.asDebug());
-                start = result.getEnd();
-            } else {
-                subResults.add(result);
-                break;
-            }
-        }
+    public void setVariable(String name, TokenizerAction restriction) {
+        this.variables.put(name, restriction);
+    }
 
-        return PatternResult.composed("Failed sequence on pattern #" + i, start, subResults);
+    public Optional<TokenizerAction> getVariable(String name) {
+        return Optional.ofNullable(this.variables.get(name));
+    }
+
+    public PatternContext getPatternContext() {
+        return this.patternContext;
     }
 
 }

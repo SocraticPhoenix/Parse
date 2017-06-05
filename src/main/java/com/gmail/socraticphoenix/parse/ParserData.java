@@ -232,8 +232,10 @@ public class ParserData {
                     this.leftBrackets.put(c, this.leftBrackets.get(c) + 1);
                 } else if (this.rightBrackets.containsKey(c)) {
                     this.rightBrackets.put(c, this.rightBrackets.get(c) + 1);
+                } else if (this.quotes.containsKey(c)) {
+                    this.quotes.put(c, !this.quotes.get(c));
                 }
-            } else if (this.quotes.containsKey(c)) {
+            } else if (this.quotes.containsKey(c) && this.quotes.get(c)) {
                 this.quotes.put(c, !this.quotes.get(c));
             }
             return String.valueOf(c);

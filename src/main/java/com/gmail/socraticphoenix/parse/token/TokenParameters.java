@@ -179,6 +179,14 @@ public class TokenParameters implements List<TokenParameters.Element> {
         return elements.spliterator();
     }
 
+    public static Element element(String val) {
+        return new Element(val);
+    }
+
+    public static Element element(Token token) {
+        return new Element(token);
+    }
+
     public static class Element {
         private Optional<String> string;
         private Optional<Token> token;

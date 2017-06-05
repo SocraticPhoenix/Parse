@@ -19,39 +19,43 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.gmail.socraticphoenix.parse.parser.restrictions;
+package com.gmail.socraticphoenix.parse.tokenizer.action;
 
+import com.gmail.socraticphoenix.collect.coupling.Pair;
 import com.gmail.socraticphoenix.parse.parser.PatternResult;
-import com.gmail.socraticphoenix.parse.parser.PatternContext;
-import com.gmail.socraticphoenix.parse.parser.PatternRestriction;
+import com.gmail.socraticphoenix.parse.token.TokenParameters;
+import com.gmail.socraticphoenix.parse.tokenizer.TokenizerAction;
+import com.gmail.socraticphoenix.parse.tokenizer.TokenizerContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SequenceRestriction implements PatternRestriction {
-    private PatternRestriction[] restrictions;
+public class SequenceAction implements TokenizerAction {
+    private TokenizerAction[] sequence;
 
-    public SequenceRestriction(PatternRestriction... restrictions) {
-        this.restrictions = restrictions.clone();
+    public SequenceAction(TokenizerAction... sequence) {
+        this.sequence = sequence;
     }
 
     @Override
-    public PatternResult match(String string, int start, PatternContext context) {
+    public Pair<List<TokenParameters.Element>, PatternResult> tokenize(String string, int start, TokenizerContext context) {
         List<PatternResult> subResults = new ArrayList<>();
+        List<TokenParameters.Element> elements = new ArrayList<>();
         int i = 0;
-        for (PatternRestriction restriction : this.restrictions) {
+        for (TokenizerAction action : this.sequence) {
             i++;
-            PatternResult result = restriction.match(string, start, context);
-            if (result.isSuccesful()) {
-                subResults.add(result.asDebug());
-                start = result.getEnd();
+            Pair<List<TokenParameters.Element>, PatternResult> result = action.tokenize(string, start, context);
+            PatternResult patternResult = result.getB();
+            if (patternResult.isSuccesful()) {
+                subResults.add(patternResult);
+                start = patternResult.getEnd();
+                elements.addAll(result.getA());
             } else {
-                subResults.add(result);
+                subResults.add(patternResult);
                 break;
             }
         }
-
-        return PatternResult.composed("Failed sequence on pattern #" + i, start, subResults);
+        return Pair.of(elements, PatternResult.composed("Failed sequence on pattern #" + i, start, subResults));
     }
 
 }

@@ -38,15 +38,17 @@ public class OrRestriction implements PatternRestriction {
     @Override
     public PatternResult match(String string, int start, PatternContext context) {
         List<PatternResult> failed = new ArrayList<>();
+
+        PatternResult longest = null;
         for (PatternRestriction restriction : this.restrictions) {
             PatternResult result = restriction.match(string, start, context);
-            if (result.isSuccesful()) {
-                return result;
+            if (result.isSuccesful() && (longest == null || result.getEnd() > longest.getEnd())) {
+                longest = result;
             } else {
                 failed.add(result);
             }
         }
-        return new PatternResult(start, PatternResult.Type.SYNTAX_ERROR, "All tests failed", failed, false);
+        return longest == null ? new PatternResult(start, PatternResult.Type.SYNTAX_ERROR, "All tests failed", failed, false) : longest;
     }
 
 }

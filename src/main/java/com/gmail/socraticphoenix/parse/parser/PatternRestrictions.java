@@ -24,6 +24,7 @@ package com.gmail.socraticphoenix.parse.parser;
 import com.gmail.socraticphoenix.parse.parser.restrictions.AndRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.CompletedRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.LazyVariableRestriction;
+import com.gmail.socraticphoenix.parse.parser.restrictions.LengthRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.LiteralRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.RepeatingNonGreedyRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.RepeatingOrNoneNonGreedyRestriction;
@@ -40,37 +41,41 @@ import com.gmail.socraticphoenix.parse.parser.restrictions.SetRestriction;
 import java.util.Collection;
 import java.util.function.BiFunction;
 
-public class PatternRestrictions {
+public interface PatternRestrictions {
 
-    public static PatternRestriction literal(String literal) {
+    static PatternRestriction length(int len) {
+        return new LengthRestriction(len);
+    }
+
+    static PatternRestriction literal(String literal) {
         return new LiteralRestriction(literal);
     }
 
-    public static PatternRestriction sequence(PatternRestriction... restrictions) {
+    static PatternRestriction sequence(PatternRestriction... restrictions) {
         return new SequenceRestriction(restrictions);
     }
 
-    public static PatternRestriction sequence(Collection<PatternRestriction> restrictions) {
+    static PatternRestriction sequence(Collection<PatternRestriction> restrictions) {
         return PatternRestrictions.sequence(restrictions.toArray(new PatternRestriction[restrictions.size()]));
     }
 
-    public static PatternRestriction and(PatternRestriction... restrictions) {
+    static PatternRestriction and(PatternRestriction... restrictions) {
         return new AndRestriction(restrictions);
     }
 
-    public static PatternRestriction and(Collection<PatternRestriction> restrictions) {
+    static PatternRestriction and(Collection<PatternRestriction> restrictions) {
         return PatternRestrictions.and(restrictions.toArray(new PatternRestriction[restrictions.size()]));
     }
 
-    public static PatternRestriction or(PatternRestriction... restrictions) {
+    static PatternRestriction or(PatternRestriction... restrictions) {
         return new OrRestriction(restrictions);
     }
 
-    public static PatternRestriction or(Collection<PatternRestriction> restrictions) {
+    static PatternRestriction or(Collection<PatternRestriction> restrictions) {
         return PatternRestrictions.or(restrictions.toArray(new PatternRestriction[restrictions.size()]));
     }
 
-    public static PatternRestriction oneOf(String... strings) {
+    static PatternRestriction oneOf(String... strings) {
         PatternRestriction[] restrictions = new PatternRestriction[strings.length];
         for (int i = 0; i < restrictions.length; i++) {
             restrictions[i] = PatternRestrictions.literal(strings[i]);
@@ -78,51 +83,51 @@ public class PatternRestrictions {
         return PatternRestrictions.or(restrictions);
     }
 
-    public static PatternRestriction repeating(PatternRestriction restriction) {
+    static PatternRestriction repeating(PatternRestriction restriction) {
         return new RepeatingRestriction(restriction);
     }
 
-    public static PatternRestriction repeatingOrNone(PatternRestriction restriction) {
+    static PatternRestriction repeatingOrNone(PatternRestriction restriction) {
         return new RepeatingOrNoneRestriction(restriction);
     }
 
-    public static PatternRestriction repeatingOrNoneNonGreedy(PatternRestriction repeat, PatternRestriction next) {
+    static PatternRestriction repeatingOrNoneNonGreedy(PatternRestriction repeat, PatternRestriction next) {
         return new RepeatingOrNoneNonGreedyRestriction(repeat, next);
     }
 
-    public static PatternRestriction repeatingNonGreedy(PatternRestriction repeat, PatternRestriction next) {
+    static PatternRestriction repeatingNonGreedy(PatternRestriction repeat, PatternRestriction next) {
         return new RepeatingNonGreedyRestriction(repeat, next);
     }
 
-    public static PatternRestriction optional(PatternRestriction restriction) {
+    static PatternRestriction optional(PatternRestriction restriction) {
         return new OptionalRestriction(restriction);
     }
 
-    public static PatternRestriction lazy(String name) {
+    static PatternRestriction lazy(String name) {
         return new LazyVariableRestriction(name);
     }
 
-    public static PatternRestriction regex(String regex) {
+    static PatternRestriction regex(String regex) {
         return new RegexRestriction(regex);
     }
 
-    public static PatternRestriction predicate(PatternRestriction generalMatch, BiFunction<String, Integer, PatternResult> predicate) {
+    static PatternRestriction predicate(PatternRestriction generalMatch, BiFunction<String, Integer, PatternResult> predicate) {
         return new PredicateRestriction(generalMatch, predicate);
     }
 
-    public static PatternRestriction set(String name, PatternRestriction restriction) {
+    static PatternRestriction set(String name, PatternRestriction restriction) {
         return new SetRestriction(name, restriction);
     }
 
-    public static PatternRestriction list(PatternRestriction element, PatternRestriction separator) {
+    static PatternRestriction list(PatternRestriction element, PatternRestriction separator) {
         return PatternRestrictions.sequence(element, PatternRestrictions.repeatingOrNone(PatternRestrictions.sequence(separator, element)));
     }
 
-    public static PatternRestriction setAndUse(String name, PatternRestriction restriction) {
+    static PatternRestriction setAndUse(String name, PatternRestriction restriction) {
         return new SetAndUseRestriction(name, restriction);
     }
 
-    public static PatternRestriction completed(PatternRestriction restriction) {
+    static PatternRestriction completed(PatternRestriction restriction) {
         return new CompletedRestriction(restriction);
     }
 

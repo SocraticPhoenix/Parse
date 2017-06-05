@@ -21,16 +21,22 @@
  */
 package com.gmail.socraticphoenix.parse.tokenizer;
 
-import com.gmail.socraticphoenix.parse.parser.PatternContext;
-import com.gmail.socraticphoenix.parse.parser.PatternRestriction;
+import com.gmail.socraticphoenix.collect.coupling.Pair;
+import com.gmail.socraticphoenix.parse.parser.PatternResult;
+import com.gmail.socraticphoenix.parse.token.Token;
 import com.gmail.socraticphoenix.parse.token.TokenParameters;
 
 import java.util.List;
 
 public interface TokenizerAction {
 
-    PatternRestriction restriction();
+    Pair<List<TokenParameters.Element>, PatternResult> tokenize(String string, int start, TokenizerContext context);
 
-    List<TokenParameters.Element> tokenize(String string, PatternContext context);
+    default Pair<Token, PatternResult> tokenize(String string, String name) {
+        Pair<List<TokenParameters.Element>, PatternResult> result = this.tokenize(string, 0, new TokenizerContext());
+        Token token = new Token(name);
+        result.getA().forEach(token::addElement);
+        return Pair.of(token, result.getB());
+    }
 
 }

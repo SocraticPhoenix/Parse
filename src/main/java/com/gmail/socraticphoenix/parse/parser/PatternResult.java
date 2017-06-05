@@ -51,7 +51,7 @@ public class PatternResult {
     }
 
     public static PatternResult composed(String error, int end, List<PatternResult> results) {
-        Type type = results.stream().filter(p -> !p.isSuccesful() && !p.isDebug()).findFirst().isPresent() ? Type.ERROR : Type.SUCCESS;
+        Type type = results.stream().anyMatch(p -> !p.isSuccesful() && !p.isDebug()) ? Type.ERROR : Type.SUCCESS;
         return new PatternResult(end, type, type.isSuccesful() ? "Matched correctly" : error, results, false);
     }
 

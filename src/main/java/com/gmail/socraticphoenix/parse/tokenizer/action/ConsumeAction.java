@@ -19,39 +19,27 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.gmail.socraticphoenix.parse.parser.restrictions;
+package com.gmail.socraticphoenix.parse.tokenizer.action;
 
+import com.gmail.socraticphoenix.collect.Items;
+import com.gmail.socraticphoenix.collect.coupling.Pair;
 import com.gmail.socraticphoenix.parse.parser.PatternResult;
-import com.gmail.socraticphoenix.parse.parser.PatternContext;
-import com.gmail.socraticphoenix.parse.parser.PatternRestriction;
+import com.gmail.socraticphoenix.parse.token.TokenParameters;
+import com.gmail.socraticphoenix.parse.tokenizer.TokenizerAction;
+import com.gmail.socraticphoenix.parse.tokenizer.TokenizerContext;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class SequenceRestriction implements PatternRestriction {
-    private PatternRestriction[] restrictions;
+public class ConsumeAction implements TokenizerAction {
+    private TokenizerAction action;
 
-    public SequenceRestriction(PatternRestriction... restrictions) {
-        this.restrictions = restrictions.clone();
+    public ConsumeAction(TokenizerAction action) {
+        this.action = action;
     }
 
     @Override
-    public PatternResult match(String string, int start, PatternContext context) {
-        List<PatternResult> subResults = new ArrayList<>();
-        int i = 0;
-        for (PatternRestriction restriction : this.restrictions) {
-            i++;
-            PatternResult result = restriction.match(string, start, context);
-            if (result.isSuccesful()) {
-                subResults.add(result.asDebug());
-                start = result.getEnd();
-            } else {
-                subResults.add(result);
-                break;
-            }
-        }
-
-        return PatternResult.composed("Failed sequence on pattern #" + i, start, subResults);
+    public Pair<List<TokenParameters.Element>, PatternResult> tokenize(String string, int start, TokenizerContext context) {
+        Pair<List<TokenParameters.Element>, PatternResult> result = this.action.tokenize(string, start, context);
+        return Pair.of(Items.buildList(), result.getB());
     }
-
 }

@@ -26,6 +26,7 @@ import com.gmail.socraticphoenix.collect.Items;
 import com.gmail.socraticphoenix.parse.parser.PatternContext;
 import com.gmail.socraticphoenix.parse.parser.PatternRestriction;
 import com.gmail.socraticphoenix.parse.parser.PatternRestrictions;
+import com.gmail.socraticphoenix.parse.parser.PatternResult;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -225,6 +226,21 @@ public class CharacterStream {
     }
 
     /**
+     * Shifts the index forwards so long as the next sequence of characters does not match the given string.
+     *
+     * @param string The string
+     *
+     * @return The characters between the current index and the given string
+     */
+    public String nextUntil(String string) {
+        StringBuilder builder = new StringBuilder();
+        while (!this.isNext(string) && this.hasNext()) {
+            builder.append(this.next().get());
+        }
+        return builder.toString();
+    }
+
+    /**
      * Shifts the index forwards so long as the predicate returns false for the current character, and {@link
      * ParserData#shouldConsider()} returns true. Specifically, the current character after the execution of this method
      * will be the next occurrence of a character which the {@code data} defines as considerable, and the predicate
@@ -329,6 +345,34 @@ public class CharacterStream {
      */
     public String nextUntil(char... array) {
         return this.nextUntil(z -> Items.contains(z, array));
+    }
+
+    /**
+     * If the given string is next (as defined by {@link CharacterStream#isNext(String)}, move the current index to the end of the given string
+     *
+     * @param s The string to skip
+     */
+    public void next(String s) {
+        if (this.isNext(s)) {
+            this.next(s.length());
+        }
+    }
+
+    /**
+     * If the given pattern is next (as defined by {@link CharacterStream#isNext(PatternRestriction)}. move the current index to the end of the content matched by {@code pattern}
+     *
+     * @param pattern The pattern to match
+     *
+     * @return The content matched by {@code pattern}, or an empty string if no content was matched
+     */
+    public String next(PatternRestriction pattern) {
+        PatternResult result = pattern.match(this.content, this.index, this.context);
+        if (result.isSuccesful()) {
+            String res = this.content.substring(this.index, result.getEnd());
+            this.index = result.getEnd();
+            return res;
+        }
+        return "";
     }
 
     /**
@@ -539,6 +583,35 @@ public class CharacterStream {
             return condition.test(z);
         }
         return false;
+    }
+
+    /**
+     * Returns true if the {@code this.peekRemaining().startsWith(s)}
+     *
+     * @param s The string to test for
+     *
+     * @return True if the next string is {@code s}, false otherwise
+     */
+    public boolean isNext(String s) {
+        return this.peekRemaining().startsWith(s);
+    }
+
+    /**
+     * returns true if the {@code restriction} matches from the current index to an arbitrary index
+     *
+     * @param restriction The restriction to match
+     *
+     * @return True if the pattern matches the content of this stream, starting at the current index. False otherwise
+     */
+    public boolean isNext(PatternRestriction restriction) {
+        return restriction.match(this.content, this.index, context).isSuccesful();
+    }
+
+    /**
+     * @return The remaining content of this CharacterStream, without moving the index
+     */
+    public String peekRemaining() {
+        return this.content.substring(this.index);
     }
 
     /**

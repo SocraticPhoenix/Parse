@@ -21,37 +21,20 @@
  */
 package com.gmail.socraticphoenix.parse.parser.restrictions;
 
-import com.gmail.socraticphoenix.parse.parser.PatternResult;
 import com.gmail.socraticphoenix.parse.parser.PatternContext;
 import com.gmail.socraticphoenix.parse.parser.PatternRestriction;
+import com.gmail.socraticphoenix.parse.parser.PatternResult;
 
-import java.util.ArrayList;
-import java.util.List;
+public class LengthRestriction implements PatternRestriction {
+    private int length;
 
-public class SequenceRestriction implements PatternRestriction {
-    private PatternRestriction[] restrictions;
-
-    public SequenceRestriction(PatternRestriction... restrictions) {
-        this.restrictions = restrictions.clone();
+    public LengthRestriction(int length) {
+        this.length = length;
     }
 
     @Override
     public PatternResult match(String string, int start, PatternContext context) {
-        List<PatternResult> subResults = new ArrayList<>();
-        int i = 0;
-        for (PatternRestriction restriction : this.restrictions) {
-            i++;
-            PatternResult result = restriction.match(string, start, context);
-            if (result.isSuccesful()) {
-                subResults.add(result.asDebug());
-                start = result.getEnd();
-            } else {
-                subResults.add(result);
-                break;
-            }
-        }
-
-        return PatternResult.composed("Failed sequence on pattern #" + i, start, subResults);
+        return PatternResult.succesful(start + this.length);
     }
 
 }
