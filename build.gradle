@@ -10,8 +10,8 @@ apply plugin : 'idea'
 //End Plugins
 
 //Program Specific Variables
-def programVersion = ""
-def programGroup = ""
+def programVersion = "0.0.0"
+def programGroup = "Parse"
 //End Variables
 
 //Gradle Variables
