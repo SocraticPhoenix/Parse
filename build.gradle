@@ -37,7 +37,7 @@ repositories {
 }
 
 dependencies {
-    runtime "com.github.PlutoPowered:Collect:master-SNAPSHOT"
+    library "com.github.PlutoPowered:Collect:master-SNAPSHOT"
 
     library fileTree(dir: 'libs', include: "*.jar")
 }
