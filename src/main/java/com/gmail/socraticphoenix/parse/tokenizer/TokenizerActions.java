@@ -26,6 +26,7 @@ import com.gmail.socraticphoenix.parse.tokenizer.action.ConsumeAction;
 import com.gmail.socraticphoenix.parse.tokenizer.action.LazyVariableAction;
 import com.gmail.socraticphoenix.parse.tokenizer.action.LiteralAction;
 import com.gmail.socraticphoenix.parse.tokenizer.action.OptionalAction;
+import com.gmail.socraticphoenix.parse.tokenizer.action.OrAction;
 import com.gmail.socraticphoenix.parse.tokenizer.action.RepeatingAction;
 import com.gmail.socraticphoenix.parse.tokenizer.action.RepeatingNonGreedyAction;
 import com.gmail.socraticphoenix.parse.tokenizer.action.RepeatingOrNoneAction;
@@ -36,6 +37,10 @@ import com.gmail.socraticphoenix.parse.tokenizer.action.SetAndUseAction;
 import com.gmail.socraticphoenix.parse.tokenizer.action.WrapAction;
 
 public interface TokenizerActions {
+
+    static TokenizerAction or(TokenizerAction... actions) {
+        return new OrAction(actions);
+    }
 
     static TokenizerAction wrap(String name, TokenizerAction action) {
         return new WrapAction(name, action);
