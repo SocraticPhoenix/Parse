@@ -33,9 +33,11 @@ import java.util.List;
 
 public class OrAction implements TokenizerAction {
     private TokenizerAction[] restrictions;
+    private boolean longest;
 
-    public OrAction(TokenizerAction... restrictions) {
+    public OrAction(boolean longest, TokenizerAction... restrictions) {
         this.restrictions = restrictions.clone();
+        this.longest = longest;
     }
 
     @Override
@@ -47,6 +49,9 @@ public class OrAction implements TokenizerAction {
             Pair<List<Element>, PatternResult> result = action.tokenize(string, start, context);
             if (result.getB().isSuccesful() && (longest == null || result.getB().getEnd() > longest.getB().getEnd())) {
                 longest = result;
+                if(!this.longest) {
+                    break;
+                }
             } else {
                 failed.add(result.getB());
             }

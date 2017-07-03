@@ -38,8 +38,12 @@ import com.gmail.socraticphoenix.parse.tokenizer.action.WrapAction;
 
 public interface TokenizerActions {
 
+    static TokenizerAction longest(TokenizerAction... actions) {
+        return new OrAction(true, actions);
+    }
+
     static TokenizerAction or(TokenizerAction... actions) {
-        return new OrAction(actions);
+        return new OrAction(false, actions);
     }
 
     static TokenizerAction wrap(String name, TokenizerAction action) {

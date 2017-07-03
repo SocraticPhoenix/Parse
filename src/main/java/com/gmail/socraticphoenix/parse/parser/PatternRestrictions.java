@@ -67,8 +67,12 @@ public interface PatternRestrictions {
         return PatternRestrictions.and(restrictions.toArray(new PatternRestriction[restrictions.size()]));
     }
 
+    static PatternRestriction longest(PatternRestriction... restrictions) {
+        return new OrRestriction(true, restrictions);
+    }
+
     static PatternRestriction or(PatternRestriction... restrictions) {
-        return new OrRestriction(restrictions);
+        return new OrRestriction(false, restrictions);
     }
 
     static PatternRestriction or(Collection<PatternRestriction> restrictions) {

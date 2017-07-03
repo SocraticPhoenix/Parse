@@ -30,9 +30,11 @@ import java.util.List;
 
 public class OrRestriction implements PatternRestriction {
     private PatternRestriction[] restrictions;
+    private boolean longest;
 
-    public OrRestriction(PatternRestriction... restrictions) {
+    public OrRestriction(boolean longest, PatternRestriction... restrictions) {
         this.restrictions = restrictions.clone();
+        this.longest = longest;
     }
 
     @Override
@@ -44,6 +46,9 @@ public class OrRestriction implements PatternRestriction {
             PatternResult result = restriction.match(string, start, context);
             if (result.isSuccesful() && (longest == null || result.getEnd() > longest.getEnd())) {
                 longest = result;
+                if(!this.longest) {
+                    break;
+                }
             } else {
                 failed.add(result);
             }
