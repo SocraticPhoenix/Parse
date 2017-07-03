@@ -23,6 +23,7 @@ package com.gmail.socraticphoenix.parse.tokenizer;
 
 import com.gmail.socraticphoenix.parse.parser.PatternContext;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,6 +33,7 @@ public class TokenizerContext {
 
     public TokenizerContext() {
         this.patternContext = new PatternContext();
+        this.variables = new HashMap<>();
     }
 
     public void setVariable(String name, TokenizerAction restriction) {
