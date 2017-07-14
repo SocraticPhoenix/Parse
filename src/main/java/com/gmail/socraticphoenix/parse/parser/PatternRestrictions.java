@@ -26,6 +26,7 @@ import com.gmail.socraticphoenix.parse.parser.restrictions.CompletedRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.LazyVariableRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.LengthRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.LiteralRestriction;
+import com.gmail.socraticphoenix.parse.parser.restrictions.NotRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.RepeatingNonGreedyRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.RepeatingOrNoneNonGreedyRestriction;
 import com.gmail.socraticphoenix.parse.parser.restrictions.OptionalRestriction;
@@ -65,6 +66,10 @@ public interface PatternRestrictions {
 
     static PatternRestriction and(Collection<PatternRestriction> restrictions) {
         return PatternRestrictions.and(restrictions.toArray(new PatternRestriction[restrictions.size()]));
+    }
+
+    static PatternRestriction not(PatternRestriction other) {
+        return new NotRestriction(other);
     }
 
     static PatternRestriction longest(PatternRestriction... restrictions) {
