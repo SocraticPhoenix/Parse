@@ -34,7 +34,7 @@ public class LengthRestriction implements PatternRestriction {
 
     @Override
     public PatternResult match(String string, int start, PatternContext context) {
-        return PatternResult.succesful(start + this.length);
+        return start + this.length <= string.length() ? PatternResult.succesful(start + this.length) : PatternResult.parseError("No content remaining", string.length());
     }
 
 }

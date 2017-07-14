@@ -205,7 +205,7 @@ public class ParserData {
                 this.unicodeEscaped = false;
 
                 try {
-                    return String.valueOf((char) Integer.parseInt(val, 16));
+                    return new String(new int[] {Integer.parseInt(val, 16)}, 0, 1);
                 } catch (NumberFormatException e) {
                     return "\\u" + val;
                 }
@@ -219,8 +219,7 @@ public class ParserData {
                 this.unicodeEscaped = true;
                 return "";
             } else {
-                String s = this.escapes.containsKey(c) ? this.escapes.get(c) : this.escapeChar + "" + c;
-                return s;
+                return this.escapes.containsKey(c) ? this.escapes.get(c) : this.escapeChar + "" + c;
             }
         } else {
             this.prevEscaped = false;
