@@ -46,7 +46,8 @@ public class Strings {
                 .escape('r', "\r")
                 .escape('"')
                 .escape('\'')
-                .escape('\\');
+                .escape('\\')
+                .escape('/');
     }
 
     public static ParserData javaEscapeFormat() {
