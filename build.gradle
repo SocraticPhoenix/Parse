@@ -37,8 +37,7 @@ repositories {
 }
 
 dependencies {
-    library "com.github.PlutoPowered:Collect:master-SNAPSHOT"
-    library fileTree(dir: 'libs', include: "*.jar")
+    library "com.github.SocraticPhoenix:Collect:master-SNAPSHOT"
 }
 //End Repositories and Dependencies
 
