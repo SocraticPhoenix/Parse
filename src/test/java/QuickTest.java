@@ -37,18 +37,7 @@ public class QuickTest {
 
         PatternRestriction arrayParsed = ParserExpressionReader.read("{completed:{sequence:[,{list:{sequence:{optional:-},{repeating:{or:0,1,2,3,4,5,6,7,8,9}},{optional:{sequence:.,{repeating:{or:0,1,2,3,4,5,6,7,8,9}}}}},{sequence:{rn: },;,{rn: }}},]}}");
 
-        PatternRestriction number = sequence(optional(literal("-")),
-                repeating(oneOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                optional(sequence(literal("."), repeating(oneOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")))));
-        PatternRestriction separator = sequence(repeatingOrNone(literal(" ")), literal(";"), repeatingOrNone(literal(" ")));
-        PatternRestriction array = completed(sequence(literal("["), list(number, separator), literal("]")));
-        System.out.println(array.match(test).buildMessage());
-        System.out.println(arrayParsed.match(test).buildMessage());
-
-        TokenizerAction numberAction = wrap("number", number);
-        TokenizerAction arrayAction = sequence(consume(literal("[")), list(numberAction, consume(separator)), consume(literal("]")));
-        Pair<Token, PatternResult> result = arrayAction.tokenize(test, "array");
-        System.out.println(result.getA().write());
+        System.out.println(arrayParsed.match(test).buildMessage(0, true));
     }
 
 }
